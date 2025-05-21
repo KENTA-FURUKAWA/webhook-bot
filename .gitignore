@@ -172,3 +172,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# 機密ファイル
+.env
+
+# ログファイル
+*.log
