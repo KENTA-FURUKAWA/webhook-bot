@@ -67,27 +67,37 @@ def reply_to_line(reply_token, text):
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    data = request.json
-    events = data.get("events", [])
-    for event in events:
-        source = event.get("source", {})
-        user_id = source.get("userId")
-        print("👤 ユーザーID:", user_id)
+    try:
+        data = request.json
+        events = data.get("events", [])
+        for event in events:
+            source = event.get("source", {})
+            user_id = source.get("userId")
+            print("👤 ユーザーID:", user_id)
 
-        msg = event.get("message", {})
-        print("📩 メッセージタイプ:", msg.get("type"))
-        print("📨 内容:", msg.get("text", "（テキスト以外）"))
+            msg = event.get("message", {})
+            print("📩 メッセージタイプ:", msg.get("type"))
+            print("📨 内容:", msg.get("text", "（テキスト以外）"))
 
-        if msg.get("type") == "location":
-            lat = msg["latitude"]
-            lon = msg["longitude"]
-            temp, rain_prob = get_today_avg_temp_and_rain(lat, lon)
-            weather = get_weather_description(lat, lon)
-            if temp is not None:
-                suggestion = generate_suggestion(temp, rain_prob, weather)
-                message = f"📍 現在地の天気：{weather}\n🌡 平均気温：{temp}℃\n☔ 降水確率：{rain_prob}%\n\n{suggestion}"
-            else:
-                message = "天気予報データが取得できませんでした。"
-            reply_to_line(event["replyToken"], message)
+            if msg.get("type") == "location":
+                lat = msg["latitude"]
+                lon = msg["longitude"]
+                print("📍 緯度経度:", lat, lon)
 
-    return "ok"
+                temp, rain_prob = get_today_avg_temp_and_rain(lat, lon)
+                print("🌡 平均気温:", temp, "☔ 降水確率:", rain_prob)
+
+                weather = get_weather_description(lat, lon)
+                print("🌤 天気説明:", weather)
+
+                if temp is not None:
+                    suggestion = generate_suggestion(temp, rain_prob, weather)
+                    message = f"📍 現在地の天気：{weather}\\n🌡 平均気温：{temp}℃\\n☔ 降水確率：{rain_prob}%\\n\\n{suggestion}"
+                else:
+                    message = "天気予報データが取得できませんでした。"
+                reply_to_line(event["replyToken"], message)
+        return "ok"
+
+    except Exception as e:
+        print("❌ 例外が発生:", str(e))
+        return "error", 500
