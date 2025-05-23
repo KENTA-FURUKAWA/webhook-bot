@@ -5,6 +5,7 @@ from flask import Flask, request
 from dotenv import load_dotenv
 
 load_dotenv()
+
 app = Flask(__name__)
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -69,8 +70,14 @@ def webhook():
     data = request.json
     events = data.get("events", [])
     for event in events:
+        source = event.get("source", {})
+        user_id = source.get("userId")
+        print("👤 ユーザーID:", user_id)
+
         msg = event.get("message", {})
-        reply_token = event.get("replyToken")
+        print("📩 メッセージタイプ:", msg.get("type"))
+        print("📨 内容:", msg.get("text", "（テキスト以外）"))
+
         if msg.get("type") == "location":
             lat = msg["latitude"]
             lon = msg["longitude"]
@@ -81,5 +88,6 @@ def webhook():
                 message = f"📍 現在地の天気：{weather}\n🌡 平均気温：{temp}℃\n☔ 降水確率：{rain_prob}%\n\n{suggestion}"
             else:
                 message = "天気予報データが取得できませんでした。"
-            reply_to_line(reply_token, message)
+            reply_to_line(event["replyToken"], message)
+
     return "ok"
