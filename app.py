@@ -57,8 +57,8 @@ def get_weather_description(lat, lon):
 def generate_suggestion(temp, rain_prob, weather):
     global client  # ← これを追加
     prompt = f"""
-子どもに、今日の平均気温「{temp}℃」に合った服装を提案してください。
-やさしく親しみやすい日本語で、1〜2文のLINEメッセージとして書いてください。
+今日の平均気温「{temp}℃」に合った子供の服装（上は長袖か半袖か、下は長ズボンか半ズボンか、生地は厚手か薄手か）を提案してください。
+やさしく親しみやすい日本語で、3〜4行のLINEメッセージとして書いてください。
 """
     res = client.chat.completions.create(
         model="gpt-3.5-turbo",
