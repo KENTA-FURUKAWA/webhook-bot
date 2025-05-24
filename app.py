@@ -104,7 +104,7 @@ def webhook():
 
                 if temp is not None:
                     suggestion = generate_suggestion(temp, rain_prob, weather)
-                    message = f"📍 現在地の天気：{weather}\n🌡 平均気温：{temp}℃\n☔ 降水確率：{rain_prob}%\n\n{suggestion}"
+                    message = f"📍 現在地の天気：{weather}\n🌡 平均気温  ：{temp}℃\n☔ 降水確率  ：{rain_prob}%\n\n{suggestion}"
                 else:
                     message = "天気予報データが取得できませんでした。"
                 reply_to_line(event["replyToken"], message)
