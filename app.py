@@ -52,19 +52,14 @@ def get_weather_description(lat, lon):
     return res["weather"][0]["description"]
 
 def generate_suggestion(temp, rain_prob, weather):
-    openai.api_key = OPENAI_API_KEY
     prompt = f"""
 1歳と3歳の子どもに、今日の天気「{weather}」、平均気温「{temp}℃」、降水確率「{rain_prob}%」に合った服装を親に提案してください。
 やさしく親しみやすい日本語で、1〜2文のLINEメッセージとして書いてください。
 """
-from openai import OpenAI
-
-client = OpenAI(api_key=OPENAI_API_KEY)
-
-res = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=[{"role": "user", "content": prompt}]
-)
+    res = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}]
+    )
     return res.choices[0].message.content.strip()
 
 def reply_to_line(reply_token, text):
