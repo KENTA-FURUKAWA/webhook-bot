@@ -12,6 +12,9 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 LINE_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 
+from openai import OpenAI  # ✅ 追加
+client = OpenAI(api_key=OPENAI_API_KEY)  # ✅ 追加
+
 def get_today_avg_temp_and_rain(lat, lon):
     url = f"https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={WEATHER_API_KEY}&units=metric&lang=ja"
     res = requests.get(url).json()
