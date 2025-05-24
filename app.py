@@ -15,6 +15,15 @@ LINE_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 def get_today_avg_temp_and_rain(lat, lon):
     url = f"https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={WEATHER_API_KEY}&units=metric&lang=ja"
     res = requests.get(url).json()
+
+    if not isinstance(res, dict):
+        print("❌ APIレスポンスが辞書形式ではありません。:", res)
+        return None, None
+
+    if "list" not in res:
+        print("❌ 'list'キーがレスポンスに存在しません。:", res)
+        return None, None
+
     from datetime import datetime, timedelta
     now = datetime.utcnow() + timedelta(hours=9)
     today_str = now.strftime("%Y-%m-%d")
